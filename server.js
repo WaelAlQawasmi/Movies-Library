@@ -22,7 +22,11 @@ server.get('/search',searchHandel);
 server.get('/tv',searchHandel);
 
 server.post('/addMovie',addHandel);
-server.get('/getMovies',getMoviesHandel);
+server.get('/getMovies',getMovieHandel);
+
+server.get('/getMovie/:id',getSpMoviesHandel);
+server.put('/UPDATE/:id',updateHandel);
+server.delete('/DELETE/:id',deleteMoviesHandel);
 
 server.get('*',error404);
 server.use(errorHandler);
@@ -57,7 +61,7 @@ function errorHandler (error,req,res){
                     }
 
 
-function getMoviesHandel(req,res){   
+function getMovieHandel(req,res){   
         let sql = `SELECT * FROM movies;`;
         clint.query(sql).then(data=>{
            res.status(200).json(data.rows);
@@ -65,9 +69,48 @@ function getMoviesHandel(req,res){
             errorHandler(error,req,res)
         });
         }
-    
+
+
+function getSpMoviesHandel(req,res){  
+    const id = req.params.id; 
+            let sql = `SELECT * FROM movies WHERE id=${id};`;
+            clint.query(sql).then(data=>{
+               res.status(200).json(data.rows);
+            }).catch(error=>{
+                errorHandler(error,req,res)
+            });
+            }
+        
       
 
+ function updateHandel(req,res){   
+    const id = req.params.id;
+ 
+    const movie = req.body;
+    const sql = `UPDATE movies SET title =$1,comment=$2 WHERE id=$3 RETURNING *;`; 
+    let values=[movie.title,movie.overview,id];
+    clint.query(sql,values).then(data=>{
+        res.status(200).json(data.rows);
+      
+    }).catch(error=>{
+        errorHandler(error,req,res)
+    });
+
+            }
+
+function deleteMoviesHandel(req,res){   
+    const id = req.params.id;
+ 
+    const sql = `DELETE FROM movies WHERE id=${id}`; 
+    clint.query(sql).then(()=>{
+        res.status(200).send("The movie has been deleted");
+     
+    }).catch(error=>{
+        errorHandler(error,req,res)
+    });
+                }
+
+            
 function favoriteHandel(req,res){   
         return res.status(200).send("Welcome to Favorite Page");
         }
