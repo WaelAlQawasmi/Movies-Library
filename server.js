@@ -8,7 +8,10 @@ const cors=require('cors');// rols in node js
   const data=require("./Movie Data/data.json"); // to read data from file
   const pg=require('pg');//  to connect for dada base manag mant system  (postGrese)
 //creating server
-const clint= new pg.Client(process.env.DATABASE_URL); // to connect to the db that we created by ubunto where the url is scure in een file
+const clint=  new pg.Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+})// to connect to the db that we created by ubunto where the url is scure in een file
 const server=express(); // to use frame work
 server.use(cors()) // to use the rule
 server.use(express.json());  // to convert to obj from json
