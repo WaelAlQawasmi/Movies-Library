@@ -1,43 +1,44 @@
-'use strict';
-//use the pacages and required data
-const axios=require('axios');
-require('dotenv').config();
-const express= require('express');
-const cors=require('cors');
-  const data=require("./Movie Data/data.json");
-  const pg=require('pg');
+'use strict';// to work under strict mode
+//use the pacages and required data  
+// npm i express cors dotenv axios pg   ,, to downloade the pacage
+const axios=require('axios');//to read from api
+require('dotenv').config(); // to read the scure data from .dev file
+const express= require('express');// node js freame work
+const cors=require('cors');// rols in node js
+  const data=require("./Movie Data/data.json"); // to read data from file
+  const pg=require('pg');//  to connect for dada base manag mant system  (postGrese)
 //creating server
-const clint= new pg.Client(process.env.DB_URL);
-const server=express();
-server.use(cors())
-server.use(express.json());
+const clint= new pg.Client(process.env.DATABASE_URL); // to connect to the db that we created by ubunto where the url is scure in een file
+const server=express(); // to use frame work
+server.use(cors()) // to use the rule
+server.use(express.json());  // to convert to obj from json
 // glbal var
-const PORT = process.env.PORT;
+const PORT = process.env.PORT;  // to read virabel from  .env file 
 // handel the routs
-server.get('/',handelJson);
+server.get('/',handelJson);  // rout and the function that will call when requst this rout
 server.get('/favorite',favoriteHandel);
 server.get('/trending',trendingHandel);
 server.get('/popular',popularHandel);
 server.get('/search',searchHandel);
 server.get('/tv',searchHandel);
 
-server.post('/addMovie',addHandel);
+server.post('/addMovie',addHandel);// post req
 server.get('/getMovies',getMovieHandel);
 
-server.get('/getMovie/:id',getSpMoviesHandel);
+server.get('/getMovie/:id',getSpMoviesHandel); // git req with var
 server.put('/UPDATE/:id',updateHandel);
 server.delete('/DELETE/:id',deleteMoviesHandel);
 
-server.get('*',error404);
-server.use(errorHandler);
+server.get('*',error404);// error 404
+server.use(errorHandler);//error 500
 
-//error
-function error404(req,res){ 
+///////////////////////error/////////////////////////////
+function error404(req,res){ // this spictional function have req and res respectively
         let jsonData={
             "status": 404,
             "responseText": "Sorry, the page Not found"
             }  
-        return res.status(404).json(jsonData);
+        return res.status(404).json(jsonData);  /// return the req with ststus code and data
         }
 
 function errorHandler (error,req,res){
@@ -48,14 +49,14 @@ function errorHandler (error,req,res){
             res.status(500).send(err);
         
         }
-//rout handel
- function addHandel(req,res){  
-                    const movi = req.body; 
-                let sql=`INSERT INTO movies(title,comment) VALUES ($1,$2) RETURNING *;`;
-                let values=[movi.title,movi.overview];
-                clint.query(sql,values).then(data =>{
+//////////////////////////rout handel//////////////////////////////////////
+ function addHandel(req,res){  //// this function to deal with post req to add data to db
+                    const movi = req.body; /// the data that i will put in body of post requst
+                let sql=`INSERT INTO movies(title,comment) VALUES ($1,$2) RETURNING *;`;// to add data to db table
+                let values=[movi.title,movi.overview]; // the values that i will take from body and add to bd table
+                clint.query(sql,values).then(data =>{ // to excute the query if it it done secssesfoly
                     res.status(200).json(data.rows);
-                }).catch(error=>{
+                }).catch(error=>{// to giv error if the query not complete
                     errorHandler(error,req,res)
                 });
                     }
@@ -72,7 +73,7 @@ function getMovieHandel(req,res){
 
 
 function getSpMoviesHandel(req,res){  
-    const id = req.params.id; 
+    const id = req.params.id; // www.0000.cpm/888/id   params 
             let sql = `SELECT * FROM movies WHERE id=${id};`;
             clint.query(sql).then(data=>{
                res.status(200).json(data.rows);
@@ -82,7 +83,7 @@ function getSpMoviesHandel(req,res){
             }
         
       
-
+ 
  function updateHandel(req,res){   
     const id = req.params.id;
  
