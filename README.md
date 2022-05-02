@@ -1,9 +1,10 @@
-# Movies-Library v1
+# Movies-Library 
 
 movie app that can check the latest movies based on categories.
 acces to 3rd party API  to git data and stor it in db afeter that can delete  and update it
 
-## following routes using the GET ,PUST ,PUT and DELETE request:
+## REST Routes  API
+ following routes using the GET ,PUST ,PUT and DELETE request:
 
 * Home Page Endpoint: /
 ** route with a method of get and a path of /  callback  spesific JSON data.
